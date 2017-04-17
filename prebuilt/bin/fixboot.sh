@@ -15,7 +15,17 @@ exec 2>&1
 
 SLOT_LOC=$(/sbin/bbx cat /ss/safestrap/active_slot)
 
-if [ "$SLOT_LOC" != "stock" ]; then
+if [ "$SLOT_LOC" = "stock" ]; then
+/sbin/bbx umount /ss
+elif [ "$SLOT_LOC" = "safe" ]; then
+/sbin/bbx mv /dev/block/system /dev/block/systemorig
+/sbin/bbx mv /dev/block/userdata /dev/block/userdataorig
+
+/sbin/bbx ln -s /dev/block/preinstall /dev/block/system
+/sbin/bbx ln -s /dev/block/webtop /dev/block/userdata
+
+/sbin/bbx umount /ss
+else
 # create SS loopdevs
 /sbin/bbx mknod -m600 /dev/block/loop-system b 7 99
 /sbin/bbx mknod -m600 /dev/block/loop-userdata b 7 98
@@ -35,6 +45,4 @@ if [ "$SLOT_LOC" != "stock" ]; then
 /sbin/bbx ln -s /dev/block/loop-system /dev/block/system
 /sbin/bbx ln -s /dev/block/loop-userdata /dev/block/userdata
 /sbin/bbx ln -s /dev/block/loop-cache /dev/block/cache
-else
-/sbin/bbx umount /ss
 fi
