@@ -25,6 +25,11 @@ elif [ "$SLOT_LOC" = "safe" ]; then
 /sbin/bbx ln -s /dev/block/webtop /dev/block/userdata
 
 /sbin/bbx umount /ss
+elif [ "$SLOT_LOC" = "altpart" ]; then
+/sbin/bbx mv /dev/block/system /dev/block/systemorig
+/sbin/bbx ln -s /dev/block/webtop /dev/block/system
+
+/sbin/bbx umount /ss
 else
 # create SS loopdevs
 /sbin/bbx mknod -m600 /dev/block/loop-system b 7 99
